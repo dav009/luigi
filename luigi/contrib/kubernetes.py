@@ -388,7 +388,11 @@ class KubernetesJobTask(luigi.Task):
         job.create()
         # Track the Job (wait while active)
         self.__logger.info("Start tracking Kubernetes Job: " + self.uu_name)
-        self.__track_job()
+        try:
+            self.__track_job()
+        except AssertionError:
+            self.__print_pod_logs()
+            raise
 
     def output(self):
         """
